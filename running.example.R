@@ -7,4 +7,4 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 source("deck.customizer.R")
 
-deck.customizer("exampledeck.xlsx", "exampleimages", i.delete.temp = T)
+deck.customizer("exampledeck.xlsx", "exampleimages")
