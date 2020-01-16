@@ -88,6 +88,7 @@ After this command the program creates two files, ‘Adventure Deck - customized
 
 * i.definitions: name of the excel file.
 * i.images: name of the directory where the images are located.
+* i.function.directory: name of the directory where the function files are located.
 * i.extname: name of the extension and the ext and mod files created.
 * i.zip.internal: T/F, whether the internal compression command is available. Use this if you are using Linux or if you are sure your windows OS has the zip.exe command available.
 * i.delete.temp = T/F, whether to delete the temporary folder tempfiles after compressing the extension and module.

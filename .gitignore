@@ -41,4 +41,4 @@ vignettes/*.pdf
 # Other
 sw-deck-customizer.Rproj
 .Rhistory
-.gitignore
+.Rproj.user

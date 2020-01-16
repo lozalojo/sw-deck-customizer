@@ -2,7 +2,7 @@
 #  + Official Adventure Deck required
 #  + Savage Worlds compatible (SWADE)
 
-deck.customizer <- function(i.definitions, i.images, i.extname = "Adventure Deck - customized", i.zip.internal = FALSE, i.delete.temp = TRUE){
+deck.customizer <- function(i.definitions, i.images, i.function.directory=".", i.extname = "Adventure Deck - customized", i.zip.internal = FALSE, i.delete.temp = TRUE){
   
   temp1 <- data.frame(filename=list.files(i.images, pattern="*.png|*.jpg|*.gif|*.bmp|*.tif", full.names = F, recursive = T), stringsAsFactors = F) %>%
     mutate(pngname=basename(filename), dirname=dirname(filename), basename=tools::file_path_sans_ext(pngname),
@@ -21,7 +21,7 @@ deck.customizer <- function(i.definitions, i.images, i.extname = "Adventure Deck
     inner_join(temp3, by="deckname") %>%
     mutate(tagname=paste(deckid,tolower(tools::file_path_sans_ext(pngname)), sep="_"))
   rm("temp1", "temp2", "temp3")
-
+  
   if (dir.exists("tempfiles")) unlink("tempfiles", recursive = T)
   if (!dir.exists("tempfiles")) dir.create("tempfiles")
   dir.create("tempfiles/ext")
@@ -108,31 +108,31 @@ deck.customizer <- function(i.definitions, i.images, i.extname = "Adventure Deck
     distinct()  
   
   lines <- character()
-
+  
   for (i in 1:NROW(decks)){
     temp1 <- datos %>%
       filter(deckid == decks$deckid[i])
     lines <- c(lines,
                paste0("CustomDeck_",decks$deckid[i], " = {"))
-      for (j in 1:NROW(temp1)){
-        lines <- c(lines,
-                   paste0("\t[\"",temp1$tagname[j],"\"] = { name = \"" ,temp1$name[j],"\", effect = \"",
-                          temp1$effect[j],"\", image = \"refimage.cards.",temp1$tagname[j],"@",i.extname,"\"},"
-                   ))
-      }
+    for (j in 1:NROW(temp1)){
+      lines <- c(lines,
+                 paste0("\t[\"",temp1$tagname[j],"\"] = { name = \"" ,temp1$name[j],"\", effect = \"",
+                        temp1$effect[j],"\", image = \"refimage.cards.",temp1$tagname[j],"@",i.extname,"\"},"
+                 ))
+    }
     lines <- c(lines,
                "}",
                "")
     rm("temp1")
   }
-
+  
   lines <- c(lines,
              "AdventureDecks = {")
-
+  
   for (i in 1:NROW(decks)){
     lines <- c(lines,
                paste0("\t{ key = \"",str_replace_all(toupper(decks$deckname[i]), "[^[:alnum:]]", ""),"\", description = \"",decks$deckname[i],"\", cards = ",paste0("CustomDeck_",decks$deckid[i]),", default = \"off\" }",ifelse(i==NROW(decks),"",","))           
-               )
+    )
   }
   
   lines <- c(lines,
@@ -169,7 +169,7 @@ deck.customizer <- function(i.definitions, i.images, i.extname = "Adventure Deck
   
   cat("\tCreating \'thumbnail.png\'\n")
   
-  file.copy("vir_logo.png", "tempfiles/mod/thumbnail.png")
+  file.copy(file.path(i.function.directory, "vir_logo.png"), "tempfiles/mod/thumbnail.png")
   
   cat("\tCreating \'client.xml\'\n")
   
@@ -251,15 +251,17 @@ deck.customizer <- function(i.definitions, i.images, i.extname = "Adventure Deck
   file.copy(file.path("tempfiles/mod", "client.xml"), file.path("tempfiles/mod", "common.xml"))
   
   cat("+ STEP FOUR: Compressing files\n")
-
+  
+  i.function.directory <- tools::file_path_as_absolute(i.function.directory)
+  
   my_wd<-getwd() # save your current working directory path
   dest_path<-"tempfiles/ext" 
   setwd(dest_path)
   if (i.zip.internal){
-  files<-list.files(recursive = T)
-  zip(zipfile=paste0(i.extname, ".ext"), files=files)
+    files<-list.files(recursive = T)
+    zip(zipfile=paste0(i.extname, ".ext"), files=files)
   }else{
-  system(paste0("\"..\\..\\7z.exe\" a -tzip \"",i.extname,".ext\" *"), intern = T)
+    system(paste0("\"",file.path(i.function.directory,"7z.exe"),"\" a -tzip \"",i.extname,".ext\" *"), intern = T)
   }
   setwd(my_wd) # reset working directory path
   
@@ -267,10 +269,10 @@ deck.customizer <- function(i.definitions, i.images, i.extname = "Adventure Deck
   dest_path<-"tempfiles/mod" 
   setwd(dest_path)
   if (i.zip.internal){
-  files<-list.files(recursive = T)
-  zip(zipfile=paste0(i.extname, ".mod"), files=files)
+    files<-list.files(recursive = T)
+    zip(zipfile=paste0(i.extname, ".mod"), files=files)
   }else{
-  system(paste0("\"..\\..\\7z.exe\" a -tzip \"",i.extname,".mod\" *"), intern = T)
+    system(paste0("\"",file.path(i.function.directory,"7z.exe"),"\" a -tzip \"",i.extname,".mod\" *"), intern = T)
   }
   setwd(my_wd) # reset working directory path
   
@@ -278,7 +280,7 @@ deck.customizer <- function(i.definitions, i.images, i.extname = "Adventure Deck
   file.copy(from=paste0(file.path("tempfiles/ext",i.extname),".ext"),to=paste0(file.path(getwd(),i.extname),".ext"), overwrite=T)
   
   if (i.delete.temp) unlink("tempfiles", recursive = T)
-
+  
 }
 
 
