@@ -16,7 +16,7 @@ The program does the following:
 * Adventure Deck installed.
 * One or more SW decks. You need to scan the decks or create your own cards.
 * R language, a statistical and graphics program; you can download and install from www.r-project.org
-* Imagemagick, a program to manipulate images; you can download It from www.imagemagick.org or install if inside R (see below).
+* Imagemagick, a program to manipulate images; you can download It from www.imagemagick.org or install it inside R (see below).
 * Some R packages are required for the function to work. See below.
 * The zip file of this repository.
 * An excel file containing the name and effects of each card in the decks.
@@ -60,7 +60,7 @@ library(readxl)
 Set the working directory to your excel file:
 
 ```
-setwd("/path/to/the/function")
+setwd("/path/to/the/excel.and.image.folder")
 ```
 
 Alternatively, if you are using Rstudio (a gui frontend for R Language), you can create a script to execute the program and use the following command to set the working directory to the directory where the script is located.
@@ -72,7 +72,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 Load the function.
 
 ```
-source("deck.customizer.R")
+source("/path/to/the/function/deck.customizer.R")
 ```
 
 Run the function.
