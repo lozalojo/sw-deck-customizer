@@ -49,6 +49,8 @@ Must have 4 columns:
 
 ## How to run the program
 
+Download this repository using the Clone or download button, decompress it to any directory and write it down to use later (path/to/the/decompressed.repository).
+
 Load the three required packages:
 
 ```
@@ -60,7 +62,7 @@ library(readxl)
 Set the working directory to your excel file:
 
 ```
-setwd("/path/to/the/excel.and.image.folder")
+setwd("path/to/the/excel.and.image.folder")
 ```
 
 Alternatively, if you are using Rstudio (a gui frontend for R Language), you can create a script to execute the program and use the following command to set the working directory to the directory where the script is located.
@@ -72,13 +74,13 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 Load the function.
 
 ```
-source("/path/to/the/function/deck.customizer.R")
+source("path/to/the/decompressed.repository/deck.customizer.R")
 ```
 
 Run the function.
 
 ```
-deck.customizer("exampledeck.xlsx", "exampleimages")
+deck.customizer("exampledeck.xlsx", "exampleimages", "path/to/the/decompressed.repository")
 ```
 
 Where first parameter is the name of the excel file and second parameter is the directory where images are located.
