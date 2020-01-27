@@ -13,16 +13,26 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     setNames(tolower(names(temp2))) %>%
     mutate(filenamelow = tolower(filename)) %>%
     select(-filename)
-  temp3 <- data.frame(deckname = unique(temp2$deckname), stringsAsFactors = F) %>%
+  
+  temp3 <- temp2 %>%
+    select(deckname, default) %>%
+    group_by(deckname, default) %>%
+    summarise(ene=n()) %>%
+    arrange(deckname, -ene) %>%
+    group_by(deckname) %>%
+    slice(1) %>%
+    ungroup() %>%
+    select(-ene) %>%
     mutate(
       dummy1 = str_replace_all(tolower(deckname), "[^[:alnum:]]", ""),
       deckid = make.unique(substr(dummy1, 1, 3), sep = "")
     ) %>%
     select(-dummy1)
   datos <- temp1 %>%
-    inner_join(temp2, by = "filenamelow") %>%
+    inner_join(select(temp2, -default), by = "filenamelow") %>%
     inner_join(temp3, by = "deckname") %>%
-    mutate(tagname = paste(deckid, tolower(tools::file_path_sans_ext(pngname)), sep = "_"))
+    mutate(tagname = paste(deckid, tolower(tools::file_path_sans_ext(pngname)), sep = "_"),
+           default=ifelse(tolower(default)=="yes","on","off"))
   rm("temp1", "temp2", "temp3")
 
   if (dir.exists("tempfiles")) unlink("tempfiles", recursive = T)
@@ -112,7 +122,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   cat("\tCreating \'adventuredeck.lua\'\n")
 
   decks <- datos %>%
-    select(deckname, deckid) %>%
+    select(deckname, deckid, default) %>%
     distinct()
 
   lines <- character()
@@ -149,7 +159,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   for (i in 1:NROW(decks)) {
     lines <- c(
       lines,
-      paste0("\t{ key = \"", str_replace_all(toupper(decks$deckname[i]), "[^[:alnum:]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"off\" }", ifelse(i == NROW(decks), "", ","))
+      paste0("\t{ key = \"", str_replace_all(toupper(decks$deckname[i]), "[^[:alnum:]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"",decks$default[i],"\" }", ifelse(i == NROW(decks), "", ","))
     )
   }
 

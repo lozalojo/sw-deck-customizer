@@ -43,6 +43,7 @@ if(!require(magick)) install.packages("magick")
 Must have 4 columns:
 
 * deckname: the name of the deck the card belongs to.
+* default: Whether the deck must be enabled by default in FG options (yes/no).
 * filename: the file name of the image file depicting the card.
 * name: the name of the card.
 * effect: the effect of the card, to be printed in the details of the full detail card window.
