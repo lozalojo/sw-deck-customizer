@@ -302,7 +302,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
                "\t\t\t\t\t\t<class>sw_referenceindex</class>",
                "\t\t\t\t\t\t<recordname>..</recordname>",
                "\t\t\t\t\t</librarylink>",
-               paste0("\t\t\t\t\t<name type=\"string\">&#747;&#747; ", toupper(decks$deckname[decki]), " &#747;&#747;</name>"),
+               paste0("\t\t\t\t\t<name type=\"string\">&#407;&#407;&#407; ", toupper(decks$deckname[decki]), " &#407;&#407;&#407;</name>"),
                "\t\t\t\t\t<index>"
     )
     
@@ -333,7 +333,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
       lines <- c(
         lines,
         paste0("\t\t\t\t<_",substr(counter1 + 100, 2, 3),"_card_", substr(j + 1000, 2, 4), "_", decksi$tagname[j], ">"),
-        paste0("\t\t\t\t\t<name type=\"string\">&#747; ", decksi$name[j], "</name>"),
+        paste0("\t\t\t\t\t<name type=\"string\">&#407; ", decksi$name[j], "</name>"),
         "\t\t\t\t\t<librarylink type=\"windowreference\">",
         "\t\t\t\t\t\t<class>imagewindow</class>",
         paste0("\t\t\t\t\t\t<recordname>refimage.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
