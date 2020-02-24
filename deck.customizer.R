@@ -3,6 +3,8 @@
 #  + Savage Worlds compatible (SWADE)
 
 deck.customizer <- function(i.definitions, i.images, i.function.directory = ".", i.extname = "Adventure Deck - customized", i.zip.internal = FALSE, i.delete.temp = TRUE) {
+  if (!i.zip.internal & !file.exists(file.path(i.function.directory, "7z.exe"))) stop("External compressor chosen (i.zip.internal=F) but 7z not found.\nPlace 7z.exe at the same folder of the function.\n")
+  
   temp1 <- data.frame(filename = list.files(i.images, pattern = "*.png|*.jpg|*.gif|*.bmp|*.tif", full.names = F, recursive = T), stringsAsFactors = F) %>%
     mutate(
       pngname = basename(filename), dirname = dirname(filename), basename = tools::file_path_sans_ext(pngname),
