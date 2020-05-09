@@ -82,7 +82,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t<properties>",
     paste0("\t\t<name>", i.extname, "</name>"),
     "\t\t<author>Created using deckgenerator by Viriato139ac, 2020</author>",
-    "\t\t<description>Deck Generator for Adventure Deck</description>",
+    "\t\t<description>Customized Adventure Deck</description>",
     "\t\t<ruleset>",
     "\t\t\t<name>SavageWorlds</name>",
     "\t\t</ruleset>",
@@ -91,6 +91,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t\t</dependency>",
     "\t\t<exclusiongroup>AdventureDeckConfig</exclusiongroup>",
     "\t</properties>",
+    "",
+    "\t<announcement text = \"Customized Adventure Deck created using deckgenerator by Viriato139ac, 2020\" icon =\"vir_logo\" Font = \"systemfont\" />",
+    "",
     "\t<base>",
     "\t\t<script name=\"MyCustom_AdventureDeck\" file=\"adventuredeck.lua\" />",
     "\t\t<includefile source=\"graphics.xml\" />",
@@ -106,7 +109,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   lines <- c(
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>",
     "",
-    "<root>"
+    "<root>",
+    "\t<icon name=\"vir_logo\" file=\"vir_logo.png\" />",
+    ""
   )
   for (i in 1:NROW(datos)) {
     lines <- c(
@@ -181,6 +186,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   fileConn <- file(file.path("tempfiles/ext", "adventuredeck.lua"))
   writeLines(lines, fileConn)
   close(fileConn)
+
+  cat("\tCopying \'vir_logo.png\'\n")
+  file.copy(file.path(i.function.directory, "vir_logo.png"), "tempfiles/ext/vir_logo.png")
 
   cat("+ STEP THREE: Creating the module\n")
 
