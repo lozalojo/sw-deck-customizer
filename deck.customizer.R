@@ -66,9 +66,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     image2 <- image_scale(image1, "54x75!")
     image3 <- image_scale(image1, "149x208!")
     image4 <- image_scale(image1, "465x650!")
-    image_write(image2, path = paste0(file.path("tempfiles/ext/graphics/54x75", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg")
-    image_write(image3, path = paste0(file.path("tempfiles/ext/graphics/149x208", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg")
-    image_write(image4, path = paste0(file.path("tempfiles/mod/images/465x650", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg")
+    image_write(image2, path = paste0(file.path("tempfiles/ext/graphics/54x75", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg", quality = 90)
+    image_write(image3, path = paste0(file.path("tempfiles/ext/graphics/149x208", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg", quality = 75)
+    image_write(image4, path = paste0(file.path("tempfiles/mod/images/465x650", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg", quality = 50)
   }
 
   cat("+ STEP TWO: Creating the extension\n")
