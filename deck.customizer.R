@@ -77,10 +77,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
 
   lines <- c(
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>",
-    "",
     "<root version=\"3.3\">",
     "\t<properties>",
-    paste0("\t\t<name>", i.extname, "</name>"),
+    paste0("\t\t<name>Feature: ", i.extname, "</name>"),
     "\t\t<author>Created using deckgenerator by Viriato139ac, 2020</author>",
     "\t\t<description>Customized Adventure Deck</description>",
     "\t\t<ruleset>",
@@ -90,13 +89,12 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t\t\t<name>AdventureDeck</name>",
     "\t\t</dependency>",
     "\t\t<exclusiongroup>AdventureDeckConfig</exclusiongroup>",
+    "\t\t<loadorder>30</loadorder>",
     "\t</properties>",
-    "",
     paste0("\t<announcement text = \"",i.extname,", a customized Adventure Deck created using deckgenerator by Viriato139ac, 2020\" icon =\"vir_logo\" Font = \"systemfont\" />"),
-    "",
     "\t<base>",
-    "\t\t<script name=\"MyCustom_AdventureDeck\" file=\"adventuredeck.lua\" />",
     "\t\t<includefile source=\"graphics.xml\" />",
+    "\t\t<script name=\"MyCustom_AdventureDeck\" file=\"adventuredeck.lua\" />",
     "\t</base>",
     "</root>"
   )
@@ -108,10 +106,8 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
 
   lines <- c(
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>",
-    "",
-    "<root>",
-    "\t<icon name=\"vir_logo\" file=\"vir_logo.png\" />",
-    ""
+    "<root version=\"3.3\">",
+    "\t<icon name=\"vir_logo\" file=\"vir_logo.png\" />"
   )
   for (i in 1:NROW(datos)) {
     lines <- c(
@@ -147,14 +143,13 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
         lines,
         paste0(
           "\t[\"", temp1$tagname[j], "\"] = { name = \"", temp1$name[j], "\", effect = \"",
-          temp1$effect[j], "\", image = \"refimage.cards.", temp1$tagname[j], "@", i.extname, "\"},"
+          temp1$effect[j], "\", image = \"adventuredeck.cards.", temp1$tagname[j], "@", i.extname, "\"}",ifelse(j==NROW(temp1),"",",")
         )
       )
     }
     lines <- c(
       lines,
-      "}",
-      ""
+      "}"
     )
     rm("temp1")
   }
@@ -167,7 +162,6 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   for (i in 1:NROW(decks)) {
     lines <- c(
       lines,
-      # paste0("\t{ key = \"", str_replace_all(toupper(decks$deckname[i]), "[^[:alnum:]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"",decks$default[i],"\" }", ifelse(i == NROW(decks), "", ","))
       paste0("\t{ key = \"", str_replace_all(toupper(decks$deckname[i]), "[^[:alnum:]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"",decks$default[i],"\" },")
     )
   }
@@ -175,7 +169,6 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   lines <- c(
     lines,
     "}",
-    "",
     "function onInit()",
     "\tAdventureDeckConfigManager.setConfig({",
     "\t\tAdventureDecks = AdventureDecks",
@@ -196,9 +189,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
 
   lines <- c(
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>",
-    "",
-    "<root>",
+    "<root version=\"3.3\">",
     paste0("\t<name>", i.extname, "</name>"),
+    "\t<category>Savage Worlds</category>",
     "\t<author>Viriato139ac</author>",
     "\t<ruleset>SavageWorlds</ruleset>",
     "</root>"
@@ -214,90 +207,11 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
 
   cat("\tCreating \'client.xml\'\n")
 
-  # lines <- c(
-  #   "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>",
-  #   "",
-  #   "<root version=\"2.8\">",
-  #   "\t<library>",
-  #   "\t\t<adventuredeckextracards static=\"true\">",
-  #   paste0("\t\t\t<name type=\"string\">", i.extname, "</name>"),
-  #   "\t\t\t<categoryname type=\"string\">Adventure Deck</categoryname>",
-  #   "\t\t\t<entries>",
-  #   "\t\t\t\t<_00_card_list>",
-  #   "\t\t\t\t\t<librarylink type=\"windowreference\">",
-  #   "\t\t\t\t\t\t<class>sw_referenceindex</class>",
-  #   "\t\t\t\t\t\t<recordname>..</recordname>",
-  #   "\t\t\t\t\t</librarylink>",
-  #   paste0("\t\t\t\t\t<name type=\"string\">", i.extname, "</name>"),
-  #   "\t\t\t\t\t<index>"
-  # )
-  # 
-  # for (i in 1:NROW(datos)) {
-  #   lines <- c(
-  #     lines,
-  #     paste0("\t\t\t\t\t\t<_", substr(i + 1000, 2, 4), "_", datos$tagname[i], ">"),
-  #     "\t\t\t\t\t\t\t<listlink type=\"windowreference\">",
-  #     "\t\t\t\t\t\t\t\t<class>imagewindow</class>",
-  #     paste0("\t\t\t\t\t\t\t\t<recordname>refimage.cards.", datos$tagname[i], "@", i.extname, "</recordname>"),
-  #     "\t\t\t\t\t\t\t</listlink>",
-  #     paste0("\t\t\t\t\t\t\t<name type=\"string\">", datos$tagname[i], "</name>"),
-  #     paste0("\t\t\t\t\t\t</_", substr(i + 1000, 2, 4), "_", datos$tagname[i], ">")
-  #   )
-  # }
-  # lines <- c(
-  #   lines,
-  #   "\t\t\t\t\t</index>",
-  #   "\t\t\t\t</_00_card_list>"
-  # )
-  # 
-  # for (i in 1:NROW(datos)) {
-  #   lines <- c(
-  #     lines,
-  #     paste0("\t\t\t\t<_01_card_", substr(i + 1000, 2, 4), "_", datos$tagname[i], ">"),
-  #     "\t\t\t\t\t<librarylink type=\"windowreference\">",
-  #     "\t\t\t\t\t\t<class>imagewindow</class>",
-  #     paste0("\t\t\t\t\t\t<recordname>refimage.cards.", datos$tagname[i], "@", i.extname, "</recordname>"),
-  #     "\t\t\t\t\t</librarylink>",
-  #     paste0("\t\t\t\t\t<name type=\"string\">&#160;&#160;", datos$name[i], "</name>"),
-  #     paste0("\t\t\t\t</_01_card_", substr(i + 1000, 2, 4), "_", datos$tagname[i], ">")
-  #   )
-  # }
-  # 
-  # lines <- c(
-  #   lines,
-  #   "\t\t\t</entries>",
-  #   "\t\t</adventuredeckextracards>",
-  #   "\t</library>",
-  #   "\t<refimage>",
-  #   "\t\t<cards>"
-  # )
-  # 
-  # for (i in 1:NROW(datos)) {
-  #   lines <- c(
-  #     lines,
-  #     paste0("\t\t\t<", datos$tagname[i], ">"),
-  #     paste0("\t\t\t\t<cardId type=\"string\">", datos$tagname[i], "</cardId>"),
-  #     "\t\t\t\t<type type=\"string\">adventurecard</type>",
-  #     "\t\t\t\t<image type=\"image\">",
-  #     paste0("\t\t\t\t\t<bitmap>images/465x650/", ifelse(datos$dirname[i] == ".", datos$basename[i], file.path(datos$dirname[i], datos$basename[i])), ".jpg</bitmap>"),
-  #     "\t\t\t\t</image>",
-  #     paste0("\t\t\t</", datos$tagname[i], ">")
-  #   )
-  # }
-  # 
-  # lines <- c(
-  #   lines,
-  #   "\t\t</cards>",
-  #   "\t</refimage>",
-  #   "\t</root>"
-  # )
-
   counter1 <- 0
   
   lines <- c(
     "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>",
-    "",
-    "<root version=\"2.8\">",
+    "<root version=\"3.3\">",
     "\t<library>",
     "\t\t<adventuredeckextracards static=\"true\">",
     paste0("\t\t\t<name type=\"string\">", i.extname, "</name>"),
@@ -326,7 +240,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
         paste0("\t\t\t\t\t\t\t<name type=\"string\">", decksi$name[j], "</name>"),
         "\t\t\t\t\t\t\t<listlink type=\"windowreference\">",
         "\t\t\t\t\t\t\t\t<class>imagewindow</class>",
-        paste0("\t\t\t\t\t\t\t\t<recordname>refimage.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
+        paste0("\t\t\t\t\t\t\t\t<recordname>adventuredeck.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
         "\t\t\t\t\t\t\t</listlink>",
         paste0("\t\t\t\t\t\t</_", substr(j + 1000, 2, 4), "_", decksi$tagname[j], ">")
       )
@@ -346,7 +260,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
         paste0("\t\t\t\t\t<name type=\"string\">&#407; ", decksi$name[j], "</name>"),
         "\t\t\t\t\t<librarylink type=\"windowreference\">",
         "\t\t\t\t\t\t<class>imagewindow</class>",
-        paste0("\t\t\t\t\t\t<recordname>refimage.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
+        paste0("\t\t\t\t\t\t<recordname>adventuredeck.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
         "\t\t\t\t\t</librarylink>",
         paste0("\t\t\t\t</_",substr(counter1 + 100, 2, 3),"_card_", substr(j + 1000, 2, 4), "_", decksi$tagname[j], ">")
       )
@@ -359,7 +273,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t\t\t</entries>",
     "\t\t</adventuredeckextracards>",
     "\t</library>",
-    "\t<refimage>",
+    "\t<adventuredeck>",
     "\t\t<cards>"
   )
   
@@ -380,7 +294,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   lines <- c(
     lines,
     "\t\t</cards>",
-    "\t</refimage>",
+    "\t</adventuredeck>",
     "\t</root>"
   )
   
@@ -388,8 +302,8 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   writeLines(lines, fileConn)
   close(fileConn)
 
-  cat("\tCreating \'common.xml\'\n")
-  file.copy(file.path("tempfiles/mod", "client.xml"), file.path("tempfiles/mod", "common.xml"))
+  # cat("\tCreating \'common.xml\'\n")
+  # file.copy(file.path("tempfiles/mod", "client.xml"), file.path("tempfiles/mod", "common.xml"))
 
   cat("+ STEP FOUR: Compressing files\n")
 
