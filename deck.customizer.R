@@ -98,7 +98,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t</base>",
     "</root>"
   )
-  fileConn <- file(file.path("tempfiles/ext", "extension.xml"))
+  fileConn <- file(file.path("tempfiles/ext", "extension.xml"), encoding = "UTF-8")
   writeLines(lines, fileConn)
   close(fileConn)
 
@@ -118,7 +118,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   }
   lines <- c(lines, "</root>")
 
-  fileConn <- file(file.path("tempfiles/ext", "graphics.xml"))
+  fileConn <- file(file.path("tempfiles/ext", "graphics.xml"), encoding = "UTF-8")
   writeLines(lines, fileConn)
   close(fileConn)
 
@@ -176,7 +176,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "end"
   )
 
-  fileConn <- file(file.path("tempfiles/ext", "adventuredeck.lua"))
+  fileConn <- file(file.path("tempfiles/ext", "adventuredeck.lua"), encoding = "UTF-8")
   writeLines(lines, fileConn)
   close(fileConn)
 
@@ -197,7 +197,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "</root>"
   )
 
-  fileConn <- file(file.path("tempfiles/mod", "definition.xml"))
+  fileConn <- file(file.path("tempfiles/mod", "definition.xml"), encoding = "UTF-8")
   writeLines(lines, fileConn)
   close(fileConn)
 
@@ -298,7 +298,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t</root>"
   )
   
-  fileConn <- file(file.path("tempfiles/mod", "client.xml"))
+  fileConn <- file(file.path("tempfiles/mod", "client.xml"), encoding = "UTF-8")
   writeLines(lines, fileConn)
   close(fileConn)
 
