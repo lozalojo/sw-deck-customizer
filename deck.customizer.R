@@ -332,8 +332,8 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   if (i.delete.temp) unlink("tempfiles", recursive = T)
 }
 
-save.file.enc <- function(i.data, i.file) {
-  fileConn <- file(i.file, encoding = "latin1")
+save.file.enc <- function(i.data, i.file, i.enc = "latin1") {
+  fileConn <- file(i.file, encoding = i.enc)
   writeLines(i.data, fileConn)
   close(fileConn)
 }
