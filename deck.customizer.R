@@ -57,7 +57,6 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     dir.create(file.path("tempfiles/mod/images/465x650", idir))
   }
 
-
   cat("+ STEP ONE: Converting images\n")
 
   for (i in 1:NROW(datos)) {
@@ -98,9 +97,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t</base>",
     "</root>"
   )
-  fileConn <- file(file.path("tempfiles/ext", "extension.xml"), encoding = "UTF-8")
-  writeLines(lines, fileConn)
-  close(fileConn)
+  
+  fileName <- file.path("tempfiles/ext", "extension.xml")
+  save.file.enc(lines, fileName)
 
   cat("\tCreating \'graphics.xml\'\n")
 
@@ -117,10 +116,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     )
   }
   lines <- c(lines, "</root>")
-
-  fileConn <- file(file.path("tempfiles/ext", "graphics.xml"), encoding = "UTF-8")
-  writeLines(lines, fileConn)
-  close(fileConn)
+  
+  fileName <- file.path("tempfiles/ext", "graphics.xml")
+  save.file.enc(lines, fileName)
 
   cat("\tCreating \'adventuredeck.lua\'\n")
 
@@ -175,10 +173,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t})",
     "end"
   )
-
-  fileConn <- file(file.path("tempfiles/ext", "adventuredeck.lua"), encoding = "UTF-8")
-  writeLines(lines, fileConn)
-  close(fileConn)
+  
+  fileName <- file.path("tempfiles/ext", "adventuredeck.lua")
+  save.file.enc(lines, fileName)
 
   cat("\tCopying \'vir_logo.png\'\n")
   file.copy(file.path(i.function.directory, "vir_logo.png"), "tempfiles/ext/vir_logo.png")
@@ -196,10 +193,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t<ruleset>SavageWorlds</ruleset>",
     "</root>"
   )
-
-  fileConn <- file(file.path("tempfiles/mod", "definition.xml"), encoding = "UTF-8")
-  writeLines(lines, fileConn)
-  close(fileConn)
+  
+  fileName <- file.path("tempfiles/mod", "definition.xml")
+  save.file.enc(lines, fileName)
 
   cat("\tCreating \'thumbnail.png\'\n")
 
@@ -298,9 +294,8 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t</root>"
   )
   
-  fileConn <- file(file.path("tempfiles/mod", "client.xml"), encoding = "UTF-8")
-  writeLines(lines, fileConn)
-  close(fileConn)
+  fileName <- file.path("tempfiles/mod", "client.xml")
+  save.file.enc(lines, fileName)
 
   # cat("\tCreating \'common.xml\'\n")
   # file.copy(file.path("tempfiles/mod", "client.xml"), file.path("tempfiles/mod", "common.xml"))
@@ -336,3 +331,11 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
 
   if (i.delete.temp) unlink("tempfiles", recursive = T)
 }
+
+save.file.enc <- function(i.data, i.file) {
+  fileConn <- file(i.file, encoding = "latin1")
+  writeLines(i.data, fileConn)
+  close(fileConn)
+}
+
+
