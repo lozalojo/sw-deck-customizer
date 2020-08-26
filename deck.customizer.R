@@ -33,7 +33,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   datos <- temp1 %>%
     inner_join(select(temp2, -default), by = "filenamelow") %>%
     inner_join(temp3, by = "deckname") %>%
-    mutate(tagname = paste(deckid, tolower(tools::file_path_sans_ext(pngname)), sep = "_"),
+    mutate(tagname = paste(deckid, str_replace_all(tolower(tools::file_path_sans_ext(pngname)), "[^[A-Za-z0-9]]", "_"), sep = "_"),
            default=ifelse(tolower(default)=="yes","on","off"))
   rm("temp1", "temp2", "temp3")
 
