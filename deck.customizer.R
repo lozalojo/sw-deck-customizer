@@ -26,7 +26,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     ungroup() %>%
     select(-ene) %>%
     mutate(
-      dummy1 = str_replace_all(tolower(deckname), "[^[:alnum:]]", ""),
+      dummy1 = str_replace_all(tolower(deckname), "[^[a-z0-9]]", ""),
       deckid = make.unique(substr(dummy1, 1, 3), sep = "")
     ) %>%
     select(-dummy1)
@@ -34,8 +34,12 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     select(-default) %>%
     inner_join(temp1, by = "filenamelow") %>%
     inner_join(temp3, by = "deckname") %>%
-    mutate(tagname = paste(deckid, str_replace_all(tolower(tools::file_path_sans_ext(pngname)), "[^[A-Za-z0-9]]", "_"), sep = "_"),
-           default=ifelse(tolower(default)=="yes","on","off"))
+    mutate(dummy1=str_replace_all(tolower(name), "[^[a-z0-9]]", "_"),
+           cardname=make.unique(dummy1, sep = ""),
+           tagname = paste(deckid, cardname, sep = "_"),
+           default=ifelse(tolower(default)=="yes","on","off")) %>%
+    select(-dummy1) %>%
+    arrange(deckname, name)
   rm("temp1", "temp2", "temp3")
 
   if (dir.exists("tempfiles")) unlink("tempfiles", recursive = T)
@@ -66,9 +70,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     image2 <- image_scale(image1, "54x75!")
     image3 <- image_scale(image1, "149x208!")
     image4 <- image_scale(image1, "465x650!")
-    image_write(image2, path = paste0(file.path("tempfiles/ext/graphics/54x75", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg", quality = 90)
-    image_write(image3, path = paste0(file.path("tempfiles/ext/graphics/149x208", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg", quality = 75)
-    image_write(image4, path = paste0(file.path("tempfiles/mod/images/465x650", datos$dirname[i], datos$basename[i]), ".jpg"), format = "jpg", quality = 50)
+    image_write(image2, path = paste0(file.path("tempfiles/ext/graphics/54x75", datos$dirname[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 90)
+    image_write(image3, path = paste0(file.path("tempfiles/ext/graphics/149x208", datos$dirname[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 75)
+    image_write(image4, path = paste0(file.path("tempfiles/mod/images/465x650", datos$dirname[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 50)
   }
 
   cat("+ STEP TWO: Creating the extension\n")
@@ -112,8 +116,8 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   for (i in 1:NROW(datos)) {
     lines <- c(
       lines,
-      paste0("\t<icon name=\"", datos$tagname[i], "\" file=\"graphics/149x208/", ifelse(datos$dirname[i] == ".", datos$basename[i], file.path(datos$dirname[i], datos$basename[i])), ".jpg\" />"),
-      paste0("\t<icon name=\"", datos$tagname[i], "-drag\" file=\"graphics/54x75/", ifelse(datos$dirname[i] == ".", datos$basename[i], file.path(datos$dirname[i], datos$basename[i])), ".jpg\" />")
+      paste0("\t<icon name=\"", datos$tagname[i], "\" file=\"graphics/149x208/", ifelse(datos$dirname[i] == ".", datos$cardname[i], file.path(datos$dirname[i], datos$cardname[i])), ".jpg\" />"),
+      paste0("\t<icon name=\"", datos$tagname[i], "-drag\" file=\"graphics/54x75/", ifelse(datos$dirname[i] == ".", datos$cardname[i], file.path(datos$dirname[i], datos$cardname[i])), ".jpg\" />")
     )
   }
   lines <- c(lines, "</root>")
@@ -161,7 +165,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   for (i in 1:NROW(decks)) {
     lines <- c(
       lines,
-      paste0("\t{ key = \"", str_replace_all(toupper(decks$deckname[i]), "[^[:alnum:]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"",decks$default[i],"\" },")
+      paste0("\t{ key = \"", str_replace_all(toupper(decks$deckname[i]), "[^[A-Z0-9]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"",decks$default[i],"\" },")
     )
   }
 
@@ -282,7 +286,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
       paste0("\t\t\t\t<cardId type=\"string\">", datos$tagname[i], "</cardId>"),
       "\t\t\t\t<type type=\"string\">adventurecard</type>",
       "\t\t\t\t<image type=\"image\">",
-      paste0("\t\t\t\t\t<bitmap>images/465x650/", ifelse(datos$dirname[i] == ".", datos$basename[i], file.path(datos$dirname[i], datos$basename[i])), ".jpg</bitmap>"),
+      paste0("\t\t\t\t\t<bitmap>images/465x650/", ifelse(datos$dirname[i] == ".", datos$cardname[i], file.path(datos$dirname[i], datos$cardname[i])), ".jpg</bitmap>"),
       "\t\t\t\t</image>",
       paste0("\t\t\t</", datos$tagname[i], ">")
     )
