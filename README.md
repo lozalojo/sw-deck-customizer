@@ -50,6 +50,10 @@ Must have 4 columns:
 
 ## How to run the program
 
+Fill in an excel file with the columns deckname,default,filename,name,effect. Write down the details of your cards, one per row.
+
+Prepare the images in any format, and put in any directory, be sure the excel filename points to the right image file and directory.
+
 Download this repository using the Clone or download button, decompress it to any directory and write it down to use later (path/to/the/decompressed.repository).
 
 Load the three required packages:
@@ -89,9 +93,10 @@ After this command the program creates two files, ‘Adventure Deck - customized
 
 ## More parameters of the function
 
-* i.definitions: name of the excel file.
-* i.images: name of the directory where the images are located.
-* i.function.directory: name of the directory where the function files are located.
-* i.extname: name of the extension and the ext and mod files created.
-* i.zip.internal: T/F, whether the internal compression command is available. Use this if you are using Linux or if you are sure your windows OS has the zip.exe command available.
-* i.delete.temp = T/F, whether to delete the temporary folder tempfiles after compressing the extension and module.
+* i.definitions (no default): name of the excel file.
+* i.images (no default): name of the directory where the images are located.
+* i.function.directory (defaults to "."): name of the directory where the function files are located.
+* i.extname (defaults to "Adventure Deck - customized"): name of the extension and the ext and mod files created.
+* i.zip.internal (defaults to FALSE): T/F, whether the internal compression command is available. Use this if you are using Linux or if you are sure your windows OS has the zip.exe command available.
+* i.delete.temp (defaults to FALSE): T/F, whether to delete the temporary folder tempfiles after compressing the extension and module.
+* i.encoding (defaults to "UTF-8"): name of the encoding of the output files, it is important for non standard characters, currently I've tested some charsets and there are differences between what Fantasy Grounds Classic and Unity handles. You have to set i.encoding = "UTF-8" for FGU and i.encoding = "latin1" for FGClassic.

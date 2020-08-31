@@ -2,8 +2,11 @@
 #  + Official Adventure Deck required
 #  + Savage Worlds compatible (SWADE)
 
-deck.customizer <- function(i.definitions, i.images, i.function.directory = ".", i.extname = "Adventure Deck - customized", i.zip.internal = FALSE, i.delete.temp = TRUE) {
+deck.customizer <- function(i.definitions, i.images, i.function.directory = ".", i.extname = "Adventure Deck - customized", 
+                            i.zip.internal = FALSE, i.delete.temp = TRUE, i.encoding ="UTF-8") {
   if (!i.zip.internal & !file.exists(file.path(i.function.directory, "7z.exe"))) stop("External compressor chosen (i.zip.internal=F) but 7z not found.\nPlace 7z.exe at the same folder of the function.\n")
+  
+  i.extname <- str_replace_all(i.extname, "[\\\\/:?\"<>|*]", "_")
   
   temp1 <- data.frame(filename = list.files(i.images, pattern = "*.png|*.jpg|*.gif|*.bmp|*.tif", full.names = F, recursive = T), stringsAsFactors = F) %>%
     mutate(
@@ -104,7 +107,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/ext", "extension.xml")
-  save.file.enc(lines, fileName)
+  save.file.enc(lines, fileName, i.enc = i.encoding)
 
   cat("\tCreating \'graphics.xml\'\n")
 
@@ -123,7 +126,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   lines <- c(lines, "</root>")
   
   fileName <- file.path("tempfiles/ext", "graphics.xml")
-  save.file.enc(lines, fileName)
+  save.file.enc(lines, fileName, i.enc = i.encoding)
 
   cat("\tCreating \'adventuredeck.lua\'\n")
 
@@ -180,7 +183,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/ext", "adventuredeck.lua")
-  save.file.enc(lines, fileName)
+  save.file.enc(lines, fileName, i.enc = i.encoding)
 
   cat("\tCopying \'vir_logo.png\'\n")
   file.copy(file.path(i.function.directory, "vir_logo.png"), "tempfiles/ext/vir_logo.png")
@@ -200,7 +203,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/mod", "definition.xml")
-  save.file.enc(lines, fileName)
+  save.file.enc(lines, fileName, i.enc = i.encoding)
 
   cat("\tCreating \'thumbnail.png\'\n")
 
@@ -300,7 +303,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/mod", "client.xml")
-  save.file.enc(lines, fileName)
+  save.file.enc(lines, fileName, i.enc = i.encoding)
 
   # cat("\tCreating \'common.xml\'\n")
   # file.copy(file.path("tempfiles/mod", "client.xml"), file.path("tempfiles/mod", "common.xml"))
@@ -337,7 +340,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   if (i.delete.temp) unlink("tempfiles", recursive = T)
 }
 
-save.file.enc <- function(i.data, i.file, i.enc = "latin1") {
+save.file.enc <- function(i.data, i.file, i.enc = "UTF-8") {
   fileConn <- file(i.file, encoding = i.enc)
   writeLines(i.data, fileConn)
   close(fileConn)
