@@ -16,7 +16,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     mod.sp.char <- "&#407;"
   }
 
-  i.extname <- str_replace_all(i.extname, "[\\\\/:?\"<>|*]", "_")
+  extname <- str_replace_all(stri_trans_general(i.extname, "latin-ascii"), "[\\\\/:?\"<>|*]", "_")
   
   temp1 <- data.frame(filename = list.files(i.images, pattern = "*.png|*.jpg|*.gif|*.bmp|*.tif", full.names = F, recursive = T), stringsAsFactors = F) %>%
     mutate(
@@ -39,7 +39,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     ungroup() %>%
     select(-ene) %>%
     mutate(
-      dummy1 = str_replace_all(tolower(deckname), "[^[a-z0-9]]", ""),
+      dummy1 = str_replace_all(stri_trans_general(tolower(deckname), "latin-ascii"), "[^[a-z0-9]]", ""),
       deckid = make.unique(substr(dummy1, 1, 3), sep = "")
     ) %>%
     select(-dummy1)
@@ -47,7 +47,8 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     select(-default) %>%
     inner_join(temp1, by = "filenamelow") %>%
     inner_join(temp3, by = "deckname") %>%
-    mutate(dummy1=str_replace_all(tolower(name), "[^[a-z0-9]]", "_"),
+    mutate(dummy1=str_replace_all(stri_trans_general(tolower(name), "latin-ascii"), "[^[a-z0-9]]", "_"),
+           dirname.out=str_replace_all(stri_trans_general(dirname, "latin-ascii"), "[\\\\/:?\"<>|*]", "_"),
            cardname=make.unique(dummy1, sep = ""),
            tagname = paste(deckid, cardname, sep = "_"),
            default=ifelse(tolower(default)=="yes","on","off")) %>%
@@ -66,10 +67,10 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   dir.create("tempfiles/mod/images/465x650")
 
   for (idir in datos %>%
-    filter(dirname != ".") %>%
-    select(dirname) %>%
+    filter(dirname.out != ".") %>%
+    select(dirname.out) %>%
     distinct() %>%
-    pull(dirname)) {
+    pull(dirname.out)) {
     dir.create(file.path("tempfiles/ext/graphics/54x75", idir))
     dir.create(file.path("tempfiles/ext/graphics/149x208", idir))
     dir.create(file.path("tempfiles/mod/images/465x650", idir))
@@ -83,9 +84,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     image2 <- image_scale(image1, "54x75!")
     image3 <- image_scale(image1, "149x208!")
     image4 <- image_scale(image1, "465x650!")
-    image_write(image2, path = paste0(file.path("tempfiles/ext/graphics/54x75", datos$dirname[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 90)
-    image_write(image3, path = paste0(file.path("tempfiles/ext/graphics/149x208", datos$dirname[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 75)
-    image_write(image4, path = paste0(file.path("tempfiles/mod/images/465x650", datos$dirname[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 50)
+    image_write(image2, path = paste0(file.path("tempfiles/ext/graphics/54x75", datos$dirname.out[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 90)
+    image_write(image3, path = paste0(file.path("tempfiles/ext/graphics/149x208", datos$dirname.out[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 75)
+    image_write(image4, path = paste0(file.path("tempfiles/mod/images/465x650", datos$dirname.out[i], datos$cardname[i]), ".jpg"), format = "jpg", quality = 50)
   }
 
   cat("+ STEP TWO: Creating the extension\n")
@@ -96,7 +97,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>",
     "<root version=\"3.3\">",
     "\t<properties>",
-    paste0("\t\t<name>Feature: ", i.extname, "</name>"),
+    paste0("\t\t<name>Feature: ", extname, "</name>"),
     "\t\t<author>Created using deckgenerator by Viriato139ac, 2020</author>",
     "\t\t<description>Customized Adventure Deck</description>",
     "\t\t<ruleset>",
@@ -111,7 +112,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t\t<exclusiongroup>AdventureDeckConfig</exclusiongroup>",
     "\t\t<loadorder>30</loadorder>",
     "\t</properties>",
-    paste0("\t<announcement text = \"",i.extname,", a customized Adventure Deck created using deckgenerator by Viriato139ac, 2020\" icon =\"vir_logo\" Font = \"systemfont\" />"),
+    paste0("\t<announcement text = \"",extname,", a customized Adventure Deck created using deckgenerator by Viriato139ac, 2020\" icon =\"vir_logo\" Font = \"systemfont\" />"),
     "\t<base>",
     "\t\t<includefile source=\"graphics.xml\" />",
     "\t\t<script name=\"MyCustom_AdventureDeck\" file=\"adventuredeck.lua\" />",
@@ -132,8 +133,8 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   for (i in 1:NROW(datos)) {
     lines <- c(
       lines,
-      paste0("\t<icon name=\"", datos$tagname[i], "\" file=\"graphics/149x208/", ifelse(datos$dirname[i] == ".", datos$cardname[i], file.path(datos$dirname[i], datos$cardname[i])), ".jpg\" />"),
-      paste0("\t<icon name=\"", datos$tagname[i], "-drag\" file=\"graphics/54x75/", ifelse(datos$dirname[i] == ".", datos$cardname[i], file.path(datos$dirname[i], datos$cardname[i])), ".jpg\" />")
+      paste0("\t<icon name=\"", datos$tagname[i], "\" file=\"graphics/149x208/", ifelse(datos$dirname.out[i] == ".", datos$cardname[i], file.path(datos$dirname.out[i], datos$cardname[i])), ".jpg\" />"),
+      paste0("\t<icon name=\"", datos$tagname[i], "-drag\" file=\"graphics/54x75/", ifelse(datos$dirname.out[i] == ".", datos$cardname[i], file.path(datos$dirname.out[i], datos$cardname[i])), ".jpg\" />")
     )
   }
   lines <- c(lines, "</root>")
@@ -162,7 +163,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
         lines,
         paste0(
           "\t[\"", temp1$tagname[j], "\"] = { name = \"", temp1$name[j], "\", effect = \"",
-          temp1$effect[j], "\", image = \"adventuredeck.cards.", temp1$tagname[j], "@", i.extname, "\"}",ifelse(j==NROW(temp1),"",",")
+          temp1$effect[j], "\", image = \"adventuredeck.cards.", temp1$tagname[j], "@", extname, "\"}",ifelse(j==NROW(temp1),"",",")
         )
       )
     }
@@ -181,7 +182,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   for (i in 1:NROW(decks)) {
     lines <- c(
       lines,
-      paste0("\t{ key = \"", str_replace_all(toupper(decks$deckname[i]), "[^[A-Z0-9]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"",decks$default[i],"\" },")
+      paste0("\t{ key = \"", str_replace_all(stri_trans_general(toupper(decks$deckname[i]), "latin-ascii"), "[^[A-Z0-9]]", ""), "\", description = \"", decks$deckname[i], "\", cards = ", paste0("CustomDeck_", decks$deckid[i]), ", default = \"",decks$default[i],"\" },")
     )
   }
 
@@ -208,7 +209,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   lines <- c(
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>",
     "<root version=\"3.3\">",
-    paste0("\t<name>", i.extname, "</name>"),
+    paste0("\t<name>", extname, "</name>"),
     "\t<category>Savage Worlds</category>",
     "\t<author>Viriato139ac</author>",
     "\t<ruleset>SavageWorlds</ruleset>",
@@ -232,7 +233,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "<root version=\"3.3\">",
     "\t<library>",
     "\t\t<adventuredeckextracards static=\"true\">",
-    paste0("\t\t\t<name type=\"string\">", i.extname, "</name>"),
+    paste0("\t\t\t<name type=\"string\">", extname, "</name>"),
     "\t\t\t<categoryname type=\"string\">Adventure Deck</categoryname>",
     "\t\t\t<entries>")
   
@@ -258,7 +259,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
         paste0("\t\t\t\t\t\t\t<name type=\"string\">", decksi$name[j], "</name>"),
         "\t\t\t\t\t\t\t<listlink type=\"windowreference\">",
         "\t\t\t\t\t\t\t\t<class>imagewindow</class>",
-        paste0("\t\t\t\t\t\t\t\t<recordname>adventuredeck.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
+        paste0("\t\t\t\t\t\t\t\t<recordname>adventuredeck.cards.", decksi$tagname[j], "@", extname, "</recordname>"),
         "\t\t\t\t\t\t\t</listlink>",
         paste0("\t\t\t\t\t\t</_", substr(j + 1000, 2, 4), "_", decksi$tagname[j], ">")
       )
@@ -278,7 +279,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
         paste0("\t\t\t\t\t<name type=\"string\">",paste(rep(mod.sp.char, 1), collapse="")," ", decksi$name[j], "</name>"),
         "\t\t\t\t\t<librarylink type=\"windowreference\">",
         "\t\t\t\t\t\t<class>imagewindow</class>",
-        paste0("\t\t\t\t\t\t<recordname>adventuredeck.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
+        paste0("\t\t\t\t\t\t<recordname>adventuredeck.cards.", decksi$tagname[j], "@", extname, "</recordname>"),
         "\t\t\t\t\t</librarylink>",
         paste0("\t\t\t\t</_",substr(counter1 + 100, 2, 3),"_card_", substr(j + 1000, 2, 4), "_", decksi$tagname[j], ">")
       )
@@ -303,7 +304,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
       paste0("\t\t\t\t<cardId type=\"string\">", datos$tagname[i], "</cardId>"),
       "\t\t\t\t<type type=\"string\">adventurecard</type>",
       "\t\t\t\t<image type=\"image\">",
-      paste0("\t\t\t\t\t<bitmap>images/465x650/", ifelse(datos$dirname[i] == ".", datos$cardname[i], file.path(datos$dirname[i], datos$cardname[i])), ".jpg</bitmap>"),
+      paste0("\t\t\t\t\t<bitmap>images/465x650/", ifelse(datos$dirname.out[i] == ".", datos$cardname[i], file.path(datos$dirname.out[i], datos$cardname[i])), ".jpg</bitmap>"),
       "\t\t\t\t</image>",
       paste0("\t\t\t</", datos$tagname[i], ">")
     )
@@ -331,9 +332,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   setwd(dest_path)
   if (i.zip.internal) {
     files <- list.files(recursive = T)
-    zip(zipfile = paste0(i.extname, ".ext"), files = files)
+    zip(zipfile = paste0(extname, ".ext"), files = files)
   } else {
-    system(paste0("\"", file.path(i.function.directory, "7z.exe"), "\" a -tzip \"", i.extname, ".ext\" *"), intern = T)
+    system(paste0("\"", file.path(i.function.directory, "7z.exe"), "\" a -tzip \"", extname, ".ext\" *"), intern = T)
   }
   setwd(my_wd) # reset working directory path
 
@@ -342,14 +343,14 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   setwd(dest_path)
   if (i.zip.internal) {
     files <- list.files(recursive = T)
-    zip(zipfile = paste0(i.extname, ".mod"), files = files)
+    zip(zipfile = paste0(extname, ".mod"), files = files)
   } else {
-    system(paste0("\"", file.path(i.function.directory, "7z.exe"), "\" a -tzip \"", i.extname, ".mod\" *"), intern = T)
+    system(paste0("\"", file.path(i.function.directory, "7z.exe"), "\" a -tzip \"", extname, ".mod\" *"), intern = T)
   }
   setwd(my_wd) # reset working directory path
 
-  file.copy(from = paste0(file.path("tempfiles/mod", i.extname), ".mod"), to = paste0(file.path(getwd(), i.extname), ".mod"), overwrite = T)
-  file.copy(from = paste0(file.path("tempfiles/ext", i.extname), ".ext"), to = paste0(file.path(getwd(), i.extname), ".ext"), overwrite = T)
+  file.copy(from = paste0(file.path("tempfiles/mod", extname), ".mod"), to = paste0(file.path(getwd(), extname), ".mod"), overwrite = T)
+  file.copy(from = paste0(file.path("tempfiles/ext", extname), ".ext"), to = paste0(file.path(getwd(), extname), ".ext"), overwrite = T)
 
   if (i.delete.temp) unlink("tempfiles", recursive = T)
 }

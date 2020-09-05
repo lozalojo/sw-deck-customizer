@@ -1,6 +1,6 @@
 # Adventure Deck Customizer
 
-Version: 0.5.20200905
+Version: 0.5.20200906
 
 ## Overview
 
