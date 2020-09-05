@@ -106,5 +106,4 @@ After this command the program creates two files, ‘Adventure Deck - customized
 * i.extname (defaults to "Adventure Deck - customized"): name of the extension and the ext and mod files created.
 * i.zip.internal (defaults to FALSE): T/F, whether the internal compression command is available. Use this if you are using Linux or if you are sure your windows OS has the zip.exe command available.
 * i.delete.temp (defaults to FALSE): T/F, whether to delete the temporary folder tempfiles after compressing the extension and module.
-* i.ext.encoding (defaults to "latin1"): name of the encoding of the output ext file, it is important for non standard characters, currently I've tested some charsets and there are differences between what Fantasy Grounds Classic and Unity handles. You have to set i.encoding = "UTF-8" for FGU and i.encoding = "latin1" for FGClassic.
-* i.mod.encoding (defaults to "latin1"): name of the encoding of the output mod file, contrary to the ext file, looks like mod file have to be "latin1", if you set to "UTF-8", FGU wont show special characters.
+* i.unity (defaults to TRUE): whether to create the deck for Unity (T) or Classic (F). There are different encodings for ext and mod files in FGU and FGC, so you have to use different versions for one or the other.

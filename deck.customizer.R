@@ -3,9 +3,19 @@
 #  + Savage Worlds compatible (SWADE)
 
 deck.customizer <- function(i.definitions, i.images, i.function.directory = ".", i.extname = "Adventure Deck - customized", 
-                            i.zip.internal = FALSE, i.delete.temp = TRUE, i.ext.encoding ="latin1", i.mod.encoding ="latin1") {
+                            i.zip.internal = FALSE, i.delete.temp = TRUE, i.unity = FALSE) {
   if (!i.zip.internal & !file.exists(file.path(i.function.directory, "7z.exe"))) stop("External compressor chosen (i.zip.internal=F) but 7z not found.\nPlace 7z.exe at the same folder of the function.\n")
   
+  if (i.unity){
+    ext.encoding <- "UTF-8"
+    mod.encoding <- "latin1"
+    mod.sp.char <- "&#8722;"
+  }else{
+    ext.encoding <- "latin1"
+    mod.encoding <- "latin1"
+    mod.sp.char <- "&#407;"
+  }
+
   i.extname <- str_replace_all(i.extname, "[\\\\/:?\"<>|*]", "_")
   
   temp1 <- data.frame(filename = list.files(i.images, pattern = "*.png|*.jpg|*.gif|*.bmp|*.tif", full.names = F, recursive = T), stringsAsFactors = F) %>%
@@ -110,7 +120,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/ext", "extension.xml")
-  save.file.enc(lines, fileName, i.enc = i.ext.encoding)
+  save.file.enc(lines, fileName, i.enc = ext.encoding)
 
   cat("\tCreating \'graphics.xml\'\n")
 
@@ -129,7 +139,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   lines <- c(lines, "</root>")
   
   fileName <- file.path("tempfiles/ext", "graphics.xml")
-  save.file.enc(lines, fileName, i.enc = i.ext.encoding)
+  save.file.enc(lines, fileName, i.enc = ext.encoding)
 
   cat("\tCreating \'adventuredeck.lua\'\n")
 
@@ -186,7 +196,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/ext", "adventuredeck.lua")
-  save.file.enc(lines, fileName, i.enc = i.ext.encoding)
+  save.file.enc(lines, fileName, i.enc = ext.encoding)
 
   cat("\tCopying \'vir_logo.png\'\n")
   file.copy(file.path(i.function.directory, "vir_logo.png"), "tempfiles/ext/vir_logo.png")
@@ -207,7 +217,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/mod", "definition.xml")
-  save.file.enc(lines, fileName, i.enc = i.mod.encoding)
+  save.file.enc(lines, fileName, i.enc = mod.encoding)
 
   cat("\tCreating \'thumbnail.png\'\n")
 
@@ -234,7 +244,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
                "\t\t\t\t\t\t<class>sw_referenceindex</class>",
                "\t\t\t\t\t\t<recordname>..</recordname>",
                "\t\t\t\t\t</librarylink>",
-               paste0("\t\t\t\t\t<name type=\"string\">&#407;&#407;&#407; ", toupper(decks$deckname[decki]), " &#407;&#407;&#407;</name>"),
+               paste0("\t\t\t\t\t<name type=\"string\">",paste(rep(mod.sp.char, 3), collapse="")," ", decks$deckname[decki], " ",paste(rep(mod.sp.char, 3), collapse=""),"</name>"),
                "\t\t\t\t\t<index>"
     )
     
@@ -265,7 +275,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
       lines <- c(
         lines,
         paste0("\t\t\t\t<_",substr(counter1 + 100, 2, 3),"_card_", substr(j + 1000, 2, 4), "_", decksi$tagname[j], ">"),
-        paste0("\t\t\t\t\t<name type=\"string\">&#407; ", decksi$name[j], "</name>"),
+        paste0("\t\t\t\t\t<name type=\"string\">",paste(rep(mod.sp.char, 1), collapse="")," ", decksi$name[j], "</name>"),
         "\t\t\t\t\t<librarylink type=\"windowreference\">",
         "\t\t\t\t\t\t<class>imagewindow</class>",
         paste0("\t\t\t\t\t\t<recordname>adventuredeck.cards.", decksi$tagname[j], "@", i.extname, "</recordname>"),
@@ -307,7 +317,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/mod", "client.xml")
-  save.file.enc(lines, fileName, i.enc = i.mod.encoding)
+  save.file.enc(lines, fileName, i.enc = mod.encoding)
 
   # cat("\tCreating \'common.xml\'\n")
   # file.copy(file.path("tempfiles/mod", "client.xml"), file.path("tempfiles/mod", "common.xml"))
