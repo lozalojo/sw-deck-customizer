@@ -3,7 +3,7 @@
 #  + Savage Worlds compatible (SWADE)
 
 deck.customizer <- function(i.definitions, i.images, i.function.directory = ".", i.extname = "Adventure Deck - customized", 
-                            i.zip.internal = FALSE, i.delete.temp = TRUE, i.encoding ="UTF-8") {
+                            i.zip.internal = FALSE, i.delete.temp = TRUE, i.ext.encoding ="latin1", i.mod.encoding ="latin1") {
   if (!i.zip.internal & !file.exists(file.path(i.function.directory, "7z.exe"))) stop("External compressor chosen (i.zip.internal=F) but 7z not found.\nPlace 7z.exe at the same folder of the function.\n")
   
   i.extname <- str_replace_all(i.extname, "[\\\\/:?\"<>|*]", "_")
@@ -92,6 +92,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t\t<ruleset>",
     "\t\t\t<name>SavageWorlds</name>",
     "\t\t</ruleset>",
+    "\t\t<ruleset>",
+    "\t\t\t<name>SWD</name>",
+    "\t\t</ruleset>",
     "\t\t<dependency>",
     "\t\t\t<name>AdventureDeck</name>",
     "\t\t</dependency>",
@@ -107,7 +110,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/ext", "extension.xml")
-  save.file.enc(lines, fileName, i.enc = i.encoding)
+  save.file.enc(lines, fileName, i.enc = i.ext.encoding)
 
   cat("\tCreating \'graphics.xml\'\n")
 
@@ -126,7 +129,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   lines <- c(lines, "</root>")
   
   fileName <- file.path("tempfiles/ext", "graphics.xml")
-  save.file.enc(lines, fileName, i.enc = i.encoding)
+  save.file.enc(lines, fileName, i.enc = i.ext.encoding)
 
   cat("\tCreating \'adventuredeck.lua\'\n")
 
@@ -183,7 +186,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/ext", "adventuredeck.lua")
-  save.file.enc(lines, fileName, i.enc = i.encoding)
+  save.file.enc(lines, fileName, i.enc = i.ext.encoding)
 
   cat("\tCopying \'vir_logo.png\'\n")
   file.copy(file.path(i.function.directory, "vir_logo.png"), "tempfiles/ext/vir_logo.png")
@@ -199,11 +202,12 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
     "\t<category>Savage Worlds</category>",
     "\t<author>Viriato139ac</author>",
     "\t<ruleset>SavageWorlds</ruleset>",
+    "\t<ruleset>SWD</ruleset>",
     "</root>"
   )
   
   fileName <- file.path("tempfiles/mod", "definition.xml")
-  save.file.enc(lines, fileName, i.enc = i.encoding)
+  save.file.enc(lines, fileName, i.enc = i.mod.encoding)
 
   cat("\tCreating \'thumbnail.png\'\n")
 
@@ -303,7 +307,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   )
   
   fileName <- file.path("tempfiles/mod", "client.xml")
-  save.file.enc(lines, fileName, i.enc = i.encoding)
+  save.file.enc(lines, fileName, i.enc = i.mod.encoding)
 
   # cat("\tCreating \'common.xml\'\n")
   # file.copy(file.path("tempfiles/mod", "client.xml"), file.path("tempfiles/mod", "common.xml"))

@@ -1,5 +1,7 @@
 # Adventure Deck Customizer
 
+Version: 0.5.20200905
+
 ## Overview
 
 This application is a tiny program to help you customize the official Adventure Deck for Savage Worlds (SW) using Fantasy Grounds (FG).
@@ -47,6 +49,11 @@ Must have 4 columns:
 * filename: the file name of the image file depicting the card.
 * name: the name of the card.
 * effect: the effect of the card, to be printed in the details of the full detail card window.
+
+Note on the format: 
+
+* You have to escape special characters: \" instead of ", and use html codes: &amp; instead of &.
+* Path to files must be relative to i.images (see parameters) directory, using '/' dir separator (as in linux), instead of windows' '\'.
 
 ## How to run the program
 
@@ -99,4 +106,5 @@ After this command the program creates two files, ‘Adventure Deck - customized
 * i.extname (defaults to "Adventure Deck - customized"): name of the extension and the ext and mod files created.
 * i.zip.internal (defaults to FALSE): T/F, whether the internal compression command is available. Use this if you are using Linux or if you are sure your windows OS has the zip.exe command available.
 * i.delete.temp (defaults to FALSE): T/F, whether to delete the temporary folder tempfiles after compressing the extension and module.
-* i.encoding (defaults to "UTF-8"): name of the encoding of the output files, it is important for non standard characters, currently I've tested some charsets and there are differences between what Fantasy Grounds Classic and Unity handles. You have to set i.encoding = "UTF-8" for FGU and i.encoding = "latin1" for FGClassic.
+* i.ext.encoding (defaults to "latin1"): name of the encoding of the output ext file, it is important for non standard characters, currently I've tested some charsets and there are differences between what Fantasy Grounds Classic and Unity handles. You have to set i.encoding = "UTF-8" for FGU and i.encoding = "latin1" for FGClassic.
+* i.mod.encoding (defaults to "latin1"): name of the encoding of the output mod file, contrary to the ext file, looks like mod file have to be "latin1", if you set to "UTF-8", FGU wont show special characters.
