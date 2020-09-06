@@ -3,7 +3,7 @@
 #  + Savage Worlds compatible (SWADE)
 
 deck.customizer <- function(i.definitions, i.images, i.function.directory = ".", i.extname = "Adventure Deck - customized", 
-                            i.zip.internal = FALSE, i.delete.temp = TRUE, i.unity = FALSE) {
+                            i.zip.internal = FALSE, i.delete.temp = TRUE, i.unity = FALSE, i.noext = FALSE) {
   if (!i.zip.internal & !file.exists(file.path(i.function.directory, "7z.exe"))) stop("External compressor chosen (i.zip.internal=F) but 7z not found.\nPlace 7z.exe at the same folder of the function.\n")
   
   if (i.unity){
@@ -43,9 +43,9 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
       deckid = make.unique(substr(dummy1, 1, 3), sep = "")
     ) %>%
     select(-dummy1)
-  datos <- temp2 %>%
+  temp4 <- temp2 %>%
     select(-default) %>%
-    inner_join(temp1, by = "filenamelow") %>%
+    left_join(temp1, by = "filenamelow") %>%
     inner_join(temp3, by = "deckname") %>%
     mutate(dummy1=str_replace_all(stri_trans_general(tolower(name), "latin-ascii"), "[^[a-z0-9]]", "_"),
            dirname.out=str_replace_all(stri_trans_general(dirname, "latin-ascii"), "[\\\\/:?\"<>|*]", "_"),
@@ -54,7 +54,18 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
            default=ifelse(tolower(default)=="yes","on","off")) %>%
     select(-dummy1) %>%
     arrange(deckname, name)
-  rm("temp1", "temp2", "temp3")
+  # Imagenes que faltan
+  temp5 <- temp4 %>%
+    filter(is.na(filename)) %>%
+    select(filenamelow) %>%
+    setNames("filename")
+  if (NROW(temp5)>0){
+    cat("+ PREVIOUS CHECK: Missing image files that were in the excel file.\n")
+    print(temp5)
+  }
+  datos <- temp4 %>%
+    filter(!is.na(filename))
+  rm("temp1", "temp2", "temp3", "temp4", "temp5")
 
   if (dir.exists("tempfiles")) unlink("tempfiles", recursive = T)
   if (!dir.exists("tempfiles")) dir.create("tempfiles")
@@ -350,7 +361,7 @@ deck.customizer <- function(i.definitions, i.images, i.function.directory = ".",
   setwd(my_wd) # reset working directory path
 
   file.copy(from = paste0(file.path("tempfiles/mod", extname), ".mod"), to = paste0(file.path(getwd(), extname), ".mod"), overwrite = T)
-  file.copy(from = paste0(file.path("tempfiles/ext", extname), ".ext"), to = paste0(file.path(getwd(), extname), ".ext"), overwrite = T)
+  if (!i.noext) file.copy(from = paste0(file.path("tempfiles/ext", extname), ".ext"), to = paste0(file.path(getwd(), extname), ".ext"), overwrite = T)
 
   if (i.delete.temp) unlink("tempfiles", recursive = T)
 }

@@ -107,3 +107,4 @@ After this command the program creates two files, ‘Adventure Deck - customized
 * i.zip.internal (defaults to FALSE): T/F, whether the internal compression command is available. Use this if you are using Linux or if you are sure your windows OS has the zip.exe command available.
 * i.delete.temp (defaults to FALSE): T/F, whether to delete the temporary folder tempfiles after compressing the extension and module.
 * i.unity (defaults to TRUE): whether to create the deck for Unity (T) or Classic (F). There are different encodings for ext and mod files in FGU and FGC, so you have to use different versions for one or the other.
+* i.noext (defaults to FALSE): whether to create the ext file or not. If you what a catalog of images for yout players to browse, then do not create the ext, and use only the mod file.
